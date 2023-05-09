@@ -1,0 +1,1 @@
+## OPCUA data service to fecth machine data and forward to fusiondataservice
