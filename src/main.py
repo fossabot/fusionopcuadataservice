@@ -11,7 +11,7 @@ opc_port = os.environ.get('OPC_PORT')
 oisp_url = os.environ.get('OISP_URL')
 oisp_port = os.environ.get('OISP_PORT')
 
-time.sleep(15)
+time.sleep(20)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client = Client(opc_url + ":" + opc_port)
