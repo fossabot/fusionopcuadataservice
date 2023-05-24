@@ -43,7 +43,7 @@ def fetchOpcData(n, i):
 
 def sendOispData(n, v):
     try:
-        msgFromClient = '[{"n": "' + n + '", "v": "' + str(v) + '"}]'
+        msgFromClient = '{"n": "' + n + '", "v": "' + str(v) + '"}'
         s.send(str.encode(msgFromClient))
         print("Sent data to OISP: " + n + " " + str(v))
     except:
