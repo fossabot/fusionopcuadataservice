@@ -11,7 +11,7 @@ opc_port = os.environ.get('OPC_PORT')
 oisp_url = os.environ.get('OISP_URL')
 oisp_port = os.environ.get('OISP_PORT')
 
-time.sleep(20)
+time.sleep(25)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client = Client(opc_url + ":" + opc_port)
@@ -24,9 +24,11 @@ root = client.get_root_node()
 def registerComponent(n, t):
     try:
         msgFromClient = '{"n": "' + n + '", "t": "' + t + '"}'
+        print(msgFromClient)
         s.send(str.encode(msgFromClient))
         print("Registered component to OISP: " + n + " " + t)
-    except:
+    except Exception as e:
+        print(e)
         print("Could not register component to OISP")
 
 
@@ -34,7 +36,9 @@ def fetchOpcData(n, i):
     try:
         var = client.get_node(n + ";" + i)
         print("Fetched data from OPC UA: " + n + " " + i)
-    except:
+        print(var.get_value())
+    except Exception as e:
+        print(e)
         print("Could not fetch data from OPC UA")
         return None
     
@@ -46,22 +50,32 @@ def sendOispData(n, v):
         msgFromClient = '{"n": "' + n + '", "v": "' + str(v) + '"}'
         s.send(str.encode(msgFromClient))
         print("Sent data to OISP: " + n + " " + str(v))
-    except:
+        print(msgFromClient)
+    except Exception as e:
+        print(e)
         print("Could not send data to OISP")
 
 
 if __name__ == "__main__":
+    time.sleep(20)
     for item in target_configs:
         oisp_n = item.split("|")[2]
         oisp_t = item.split("|")[3]
-        
         registerComponent(oisp_n, oisp_t)
+        time.sleep(20)
 
     while 1:
-        time.sleep(5)
         for item in target_configs:
+            time.sleep(1)
             opc_n = item.split("|")[0]
             opc_i = item.split("|")[1]
             oisp_n = item.split("|")[2]
             opc_value = fetchOpcData(n=opc_n, i=opc_i)
+            if str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and str(opc_value) == "True":
+                opc_value = 2
+            elif str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and str(opc_value) == "False":
+                opc_value = 1
+            elif str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status":
+                opc_value = 0
+
             sendOispData(n=oisp_n, v=opc_value)
