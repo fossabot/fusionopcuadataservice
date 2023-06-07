@@ -1,5 +1,14 @@
+cbor==1.0.0
+certifi==2023.5.7
+charset-normalizer==3.1.0
+idna==3.4
 lxml==4.9.2
+oisp==0.2.1
 opcua==0.98.13
+Pygments==2.15.1
 python-dateutil==2.8.2
 pytz==2023.3
+requests==2.31.0
 six==1.16.0
+termcolor==2.3.0
+urllib3==2.0.2

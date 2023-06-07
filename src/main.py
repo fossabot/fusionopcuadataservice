@@ -2,14 +2,20 @@ from opcua import Client
 import os
 import socket
 import time
+import oisp
 
+OISP_API_ROOT = os.environ.get('OISP_API_ROOT')
+USERNAME = os.environ.get('USERNAME')
+PASSWORD = os.environ.get('PASSWORD')
+device_id = os.environ.get('OISP_DEVICE_ID')
 target_configs = os.environ.get('TARGET_CONFIGS').split(",")
-
 opc_url = os.environ.get('OPC_URL')
 opc_port = os.environ.get('OPC_PORT')
-
 oisp_url = os.environ.get('OISP_URL')
 oisp_port = os.environ.get('OISP_PORT')
+
+oisp_client = oisp.Client(api_root=OISP_API_ROOT)
+oisp_client.auth(USERNAME, PASSWORD)
 
 time.sleep(25)
 
@@ -58,6 +64,19 @@ def sendOispData(n, v):
 
 if __name__ == "__main__":
     time.sleep(20)
+
+    accounts = oisp_client.get_accounts()
+    account = accounts[0]
+    devices = account.get_devices()
+    for j in range(len(devices)):
+        if str(device_id) == str(devices[j].device_id):
+            device = devices[j]
+            print(device.components)
+            for components in device.components:
+                print("Deleting component: " + components['cid'])
+                time.sleep(2)
+                device.delete_component(components['cid'])
+            
     for item in target_configs:
         oisp_n = item.split("|")[2]
         oisp_t = item.split("|")[3]
