@@ -1,3 +1,4 @@
+import json
 from opcua import Client
 import os
 import socket
@@ -8,7 +9,6 @@ OISP_API_ROOT = os.environ.get('OISP_API_ROOT')
 USERNAME = os.environ.get('USERNAME')
 PASSWORD = os.environ.get('PASSWORD')
 device_id = os.environ.get('OISP_DEVICE_ID')
-target_configs = os.environ.get('TARGET_CONFIGS').split(",")
 opc_url = os.environ.get('OPC_URL')
 opc_port = os.environ.get('OPC_PORT')
 oisp_url = os.environ.get('OISP_URL')
@@ -25,6 +25,11 @@ client = Client(opc_url + ":" + opc_port)
 client.connect()
 s.connect((str(oisp_url), int(oisp_port)))
 root = client.get_root_node()
+
+# Opening JSON file
+f = open("../resources/config.json")
+target_configs = json.load(f)
+f.close()
 
 
 def registerComponent(n, t):
@@ -77,18 +82,18 @@ if __name__ == "__main__":
                 time.sleep(2)
                 device.delete_component(components['cid'])
             
-    for item in target_configs:
-        oisp_n = item.split("|")[2]
-        oisp_t = item.split("|")[3]
+    for item in target_configs['fusionopcuadataservice']['specification']:
+        oisp_n = "Property/http://www.industry-fusion.org/fields#" + item['parameter']
+        oisp_t = "property.v1.0"
         registerComponent(oisp_n, oisp_t)
-        time.sleep(20)
+        time.sleep(10)
 
     while 1:
-        for item in target_configs:
-            time.sleep(1)
-            opc_n = item.split("|")[0]
-            opc_i = item.split("|")[1]
-            oisp_n = item.split("|")[2]
+        for item in target_configs['fusionopcuadataservice']['specification']:
+            time.sleep(0.5)
+            opc_n = item['node_id']
+            opc_i = item['identifier']
+            oisp_n = "Property/http://www.industry-fusion.org/fields#" + item['parameter']
             opc_value = fetchOpcData(n=opc_n, i=opc_i)
             if str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and str(opc_value) == "True":
                 opc_value = 2
