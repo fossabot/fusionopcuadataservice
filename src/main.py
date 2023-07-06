@@ -95,9 +95,9 @@ if __name__ == "__main__":
             opc_i = item['identifier']
             oisp_n = "Property/http://www.industry-fusion.org/fields#" + item['parameter']
             opc_value = fetchOpcData(n=opc_n, i=opc_i)
-            if str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and str(opc_value) == "True":
+            if str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and (str(opc_value) == "True" or str(opc_value) == "1"):
                 opc_value = 2
-            elif str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and str(opc_value) == "False":
+            elif str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status" and (str(opc_value) == "False" or str(opc_value) == "0"):
                 opc_value = 1
             elif str(oisp_n) == "Property/http://www.industry-fusion.org/fields#status":
                 opc_value = 0
