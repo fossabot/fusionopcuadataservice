@@ -98,6 +98,6 @@ if __name__ == "__main__":
             if str(oisp_n) == "Property/http://www.industry-fusion.org/fields#base-objects-v0.1-operation-conditions-runtime-machine-state":
                 opc_value = 2
             else:
-                opc_value = 1
+                opc_value = str(opc_value)
 
             sendOispData(n=oisp_n, v=opc_value)
