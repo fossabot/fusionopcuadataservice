@@ -22,13 +22,20 @@ oisp_client.auth(USERNAME, PASSWORD)
 time.sleep(25)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client = Client(opc_url + ":" + opc_port)
+try:
+    client = Client(opc_url + ":" + opc_port)
+    print("Connected to OPC UA server")
+except Exception as e:
+    print(e)
+    print("Could not connect to OPC UA server")
 
 if opc_username is not None and opc_password is not None:
     client.set_user(opc_username)
     client.set_password(opc_password)
+    client.connect()
+else:
+    client.connect()
 
-client.connect()
 s.connect((str(oisp_url), int(oisp_port)))
 root = client.get_root_node()
 
@@ -101,7 +108,8 @@ if __name__ == "__main__":
             opc_i = item['identifier']
             oisp_n = "Property/http://www.industry-fusion.org/fields#" + item['parameter']
             opc_value = fetchOpcData(n=opc_n, i=opc_i)
-            if str(oisp_n) == "Property/http://www.industry-fusion.org/fields#base-objects-v0.1-operation-conditions-runtime-machine-state":
+            check = str(oisp_n).split("-")
+            if "state" in check:
                 opc_value = 2
             else:
                 opc_value = str(opc_value)
