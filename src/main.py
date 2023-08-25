@@ -13,6 +13,8 @@ opc_url = os.environ.get('OPC_URL')
 opc_port = os.environ.get('OPC_PORT')
 oisp_url = os.environ.get('OISP_URL')
 oisp_port = os.environ.get('OISP_PORT')
+opc_username = os.environ.get('OPC_USERNAME')
+opc_password = os.environ.get('OPC_PASSWORD')
 
 oisp_client = oisp.Client(api_root=OISP_API_ROOT)
 oisp_client.auth(USERNAME, PASSWORD)
@@ -21,6 +23,10 @@ time.sleep(25)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client = Client(opc_url + ":" + opc_port)
+
+if opc_username is not None and opc_password is not None:
+    client.set_user(opc_username)
+    client.set_password(opc_password)
 
 client.connect()
 s.connect((str(oisp_url), int(oisp_port)))
