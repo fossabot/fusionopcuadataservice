@@ -19,22 +19,24 @@ opc_password = os.environ.get('OPC_PASSWORD')
 oisp_client = oisp.Client(api_root=OISP_API_ROOT)
 oisp_client.auth(USERNAME, PASSWORD)
 
-time.sleep(25)
+time.sleep(30)
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
 try:
     client = Client(opc_url + ":" + opc_port)
     print("Connected to OPC UA server")
-except Exception as e:
-    print(e)
+except:
     print("Could not connect to OPC UA server")
+    exit()
 
-if opc_username is not None and opc_password is not None:
+async def make_connection():
+    global client
     client.set_user(opc_username)
     client.set_password(opc_password)
-    client.connect()
-else:
-    client.connect()
+    await client.connect()
+
+make_connection()
 
 s.connect((str(oisp_url), int(oisp_port)))
 root = client.get_root_node()
