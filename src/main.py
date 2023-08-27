@@ -36,8 +36,11 @@ async def make_connection():
     client.set_password(opc_password)
     await client.connect()
 
-make_connection()
-
+if opc_username is not None and opc_password is not None:
+    make_connection()
+else:
+    client.connect()
+    
 s.connect((str(oisp_url), int(oisp_port)))
 root = client.get_root_node()
 
