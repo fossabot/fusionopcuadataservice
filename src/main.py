@@ -36,7 +36,7 @@ async def make_connection():
     client.set_password(opc_password)
     await client.connect()
 
-if opc_username is not None and opc_password is not None:
+if opc_username != "" and opc_password != "":
     make_connection()
 else:
     client.connect()
