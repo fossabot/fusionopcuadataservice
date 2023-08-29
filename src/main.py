@@ -69,7 +69,7 @@ def fetchOpcData(n, i):
     except Exception as e:
         print(e)
         print("Could not fetch data from OPC UA")
-        return None
+        return "0.0"
     
     return var.get_value()
 
@@ -114,8 +114,10 @@ if __name__ == "__main__":
             oisp_n = "Property/http://www.industry-fusion.org/fields#" + item['parameter']
             opc_value = fetchOpcData(n=opc_n, i=opc_i)
             check = str(oisp_n).split("-")
-            if "state" in check:
+            if "state" in check and opc_value != "0.0":
                 opc_value = 2
+            elif "state" in check and opc_value == "0.0":
+                opc_value = 0
             else:
                 opc_value = str(opc_value)
 
