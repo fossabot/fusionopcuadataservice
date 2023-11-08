@@ -9,8 +9,7 @@ OISP_API_ROOT = os.environ.get('OISP_API_ROOT')
 USERNAME = os.environ.get('USERNAME')
 PASSWORD = os.environ.get('PASSWORD')
 device_id = os.environ.get('OISP_DEVICE_ID')
-opc_url = os.environ.get('OPC_URL')
-opc_port = os.environ.get('OPC_PORT')
+opcua_discovery_url = os.environ.get('OPCUA_DISCOVERY_URL')
 oisp_url = os.environ.get('OISP_URL')
 oisp_port = os.environ.get('OISP_PORT')
 opc_username = os.environ.get('OPC_USERNAME')
@@ -24,7 +23,7 @@ time.sleep(30)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
-    client = Client(opc_url + ":" + opc_port)
+    client = Client(opcua_discovery_url)
     print("Connected to OPC UA server")
 except:
     print("Could not connect to OPC UA server")
