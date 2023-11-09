@@ -9,7 +9,11 @@ OISP_API_ROOT = os.environ.get('OISP_API_ROOT')
 USERNAME = os.environ.get('USERNAME')
 PASSWORD = os.environ.get('PASSWORD')
 device_id = os.environ.get('OISP_DEVICE_ID')
-opcua_discovery_url = os.environ.get('OPCUA_DISCOVERY_URL')
+
+for key, value in os.environ.items():
+    if key.startswith('OPCUA_DISCOVERY_URL'):
+        opcua_discovery_url = os.environ.get(key)
+
 oisp_url = os.environ.get('OISP_URL')
 oisp_port = os.environ.get('OISP_PORT')
 opc_username = os.environ.get('OPC_USERNAME')
@@ -19,7 +23,7 @@ oisp_client = oisp.Client(api_root=OISP_API_ROOT)
 oisp_client.auth(USERNAME, PASSWORD)
 
 time.sleep(30)
-
+print('env name' + opcua_discovery_url)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
