@@ -23,7 +23,7 @@ oisp_client = oisp.Client(api_root=OISP_API_ROOT)
 oisp_client.auth(USERNAME, PASSWORD)
 
 time.sleep(30)
-print('env name' + opcua_discovery_url)
+print('env name: ' + opcua_discovery_url)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 try:
@@ -46,6 +46,9 @@ else:
     
 s.connect((str(oisp_url), int(oisp_port)))
 root = client.get_root_node()
+
+for i in client.find_servers():
+    print(str(i.ApplicationName.Text))
 
 # Opening JSON file
 f = open("../resources/config.json")
