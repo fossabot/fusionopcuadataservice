@@ -49,6 +49,7 @@ root = client.get_root_node()
 
 for i in client.find_servers():
     print(str(i.ApplicationName.Text))
+    print(str(i.ApplicationUri))
 
 # Opening JSON file
 f = open("../resources/config.json")
