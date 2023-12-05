@@ -5,6 +5,7 @@ import socket
 import time
 import oisp
 
+# Fetching all environment variables
 OISP_API_ROOT = os.environ.get('OISP_API_ROOT')
 USERNAME = os.environ.get('USERNAME')
 PASSWORD = os.environ.get('PASSWORD')
@@ -19,13 +20,20 @@ oisp_port = os.environ.get('OISP_PORT')
 opc_username = os.environ.get('OPC_USERNAME')
 opc_password = os.environ.get('OPC_PASSWORD')
 
+# PDT TCP client instance creation with username and password
 oisp_client = oisp.Client(api_root=OISP_API_ROOT)
 oisp_client.auth(USERNAME, PASSWORD)
 
+# Explicit sleep to wait for OISP agent to work
 time.sleep(30)
+
+# Printing the Akri discovered URL 
 print('env name: ' + opcua_discovery_url)
+
+# TCP socket config for OISP
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+# OPCUA client instance creation
 try:
     client = Client(opcua_discovery_url)
     print("Connected to OPC UA server")
@@ -39,24 +47,27 @@ async def make_connection():
     client.set_password(opc_password)
     await client.connect()
 
+# OPCUA connection with or without password
 if opc_username != "" and opc_password != "":
     make_connection()
 else:
     client.connect()
     
+# PDT client connection
 s.connect((str(oisp_url), int(oisp_port)))
 root = client.get_root_node()
 
+# Prinitng the OPC applicationName and Uri to confirm the AKri config
 for i in client.find_servers():
     print(str(i.ApplicationName.Text))
     print(str(i.ApplicationUri))
 
-# Opening JSON file
+# Opening JSON config file for OPCUA - machine specific config from mouted path in runtime
 f = open("../resources/config.json")
 target_configs = json.load(f)
 f.close()
 
-
+# Method to register the propertires in OPC-UA config with PDT
 def registerComponent(n, t):
     try:
         msgFromClient = '{"n": "' + n + '", "t": "' + t + '"}'
@@ -68,6 +79,7 @@ def registerComponent(n, t):
         print("Could not register component to OISP")
 
 
+# Method to fetch the OPC-UA Node value with given namespace and identifier
 def fetchOpcData(n, i):
     try:
         var = client.get_node(n + ";" + i)
@@ -81,6 +93,7 @@ def fetchOpcData(n, i):
     return var.get_value()
 
 
+# Mehtod to sent the value of the OPC-UA node to PDT with its property
 def sendOispData(n, v):
     try:
         msgFromClient = '{"n": "' + n + '", "v": "' + str(v) + '"}'
@@ -95,6 +108,7 @@ def sendOispData(n, v):
 if __name__ == "__main__":
     time.sleep(20)
 
+    # Get PDT Device GW account and delete the previously registered varibales to ignore errors in the new registration
     accounts = oisp_client.get_accounts()
     account = accounts[0]
     devices = account.get_devices()
@@ -106,13 +120,16 @@ if __name__ == "__main__":
                 print("Deleting component: " + components['cid'])
                 time.sleep(2)
                 device.delete_component(components['cid'])
-            
+
+    # Method call for registering the device properties        
     for item in target_configs['fusionopcuadataservice']['specification']:
         oisp_n = "Property/http://www.industry-fusion.org/fields#" + item['parameter']
         oisp_t = "property.v1.0"
         registerComponent(oisp_n, oisp_t)
         time.sleep(10)
 
+    # Continously fetch the properties, OPC-UA namespace and identifier from OPC-UA config
+    # Fetch the respective value from the OPC_UA server and sending it to PDT with the property
     while 1:
         for item in target_configs['fusionopcuadataservice']['specification']:
             time.sleep(0.5)
