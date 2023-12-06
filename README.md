@@ -1,4 +1,6 @@
 # Fusion OPC-UA Data Service
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FIndustryFusion%2Ffusionopcuadataservice.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FIndustryFusion%2Ffusionopcuadataservice?ref=badge_shield)
+
 
 This Python script facilitates the integration between an OPC-UA server and the PDT Gateway services by performing the following tasks:
 
@@ -150,3 +152,6 @@ From the root project folder.
 `docker build -t <image name> .`
 
 `docker run -d -e OISP_API_ROOT="https://<PDT URL>/oisp/v1/api" -e USERNAME=<Username from PDT Keycloak> -e PASSWORD=<Passowrd from PDT Keycloak> -e OISP_DEVICE_ID=<Device ID of the asset in PDT - Scorpio API to which the data must be sent> -e OPCUA_DISCOVERY_URL=<OPC-UA Server URL> -e OISP_URL=<URL of the OISP Agent> -e OISP_PORT=<7070> -e OPC_USERNAME=<Usenrame of OPC-UA server, if any> -e OPC_PASSWORD=<Password of OPC-UA server, if any> -v <config file path>:resources/config.json`
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FIndustryFusion%2Ffusionopcuadataservice.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FIndustryFusion%2Ffusionopcuadataservice?ref=badge_large)
