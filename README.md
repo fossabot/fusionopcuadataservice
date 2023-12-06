@@ -14,7 +14,7 @@ This Python script facilitates the integration between an OPC-UA server and the 
 3. Working OPC-UA server.
 4. The OISP agent must be started in the same system using Docker Container. Use the following command to start the OISP agent in local for development usage.
 
-´docker run -d -e OISP_DEVICE_ID=< Device ID of the asset in PDT > -e OISP_DEVICE_NAME=< Device ID of the asset in PDT > -e OISP_GATEWAY_ID=< Device ID of the asset in PDT > -e OISP_DEVICE_ACTIVATION_CODE=< Activation code from the OISP account > -v /volume/config:/volume/config --security-opt=privileged=true --cap-drop=all -p 41234:41234 -p 7070:7070 docker.io/ibn40/oisp-iot-agent:v2.4.2´
+`docker run -d -e OISP_DEVICE_ID=< Device ID of the asset in PDT > -e OISP_DEVICE_NAME=< Device ID of the asset in PDT > -e OISP_GATEWAY_ID=< Device ID of the asset in PDT > -e OISP_DEVICE_ACTIVATION_CODE=< Activation code from the OISP account > -v /volume/config:/volume/config --security-opt=privileged=true --cap-drop=all -p 41234:41234 -p 7070:7070 docker.io/ibn40/oisp-iot-agent:v2.4.2`
 
 To get the activation code, reach to the https://< PDT endpoint URL >/ui. Then, sign in with the relevant admin  credentials created in Keycloak i.e, https://< PDT endpoint URL >/auth, and then check account details page.
 
@@ -74,43 +74,46 @@ From the root directory of this project run the below commands to install and ac
 
 **To install venv**
 
-´python3 -m venv .venv´
+`python3 -m venv .venv`
 
 **To activate**
 
-source .venv/bin/activate
+`source .venv/bin/activate`
 
 **Install required modules**
 
-´pip3 install -r requirements.txt´
+`pip3 install -r requirements.txt`
 
 **Run the project (export environment varibales first as shown below)**
 
-export OISP_API_ROOT="https://< PDT URL >/oisp/v1/api"
+`export OISP_API_ROOT="https://< PDT URL >/oisp/v1/api"`
 
-export USERNAME=< Username from PDT Keycloak >
+`export USERNAME=< Username from PDT Keycloak >`
 
-export PASSWORD=< Passowrd from PDT Keycloak >
+`export PASSWORD=< Passowrd from PDT Keycloak >`
 
-´export OISP_DEVICE_ID=< Device ID of the asset in PDT - Scorpio API to which the data must be sent >´
+`export OISP_DEVICE_ID=< Device ID of the asset in PDT - Scorpio API to which the data must be sent >`
 
 Example: "urn:ngsi-ld:assetv5:2:46"
 
-´export OPCUA_DISCOVERY_URL=< OPC-UA Server URL >´
+
+`export OPCUA_DISCOVERY_URL=< OPC-UA Server URL >`
 
 Example: "opc.tcp://192.168.49.171:4840"
 
-´export OISP_URL=< URL of the OISP Agent >´
 
-Example: "127.0.0.1", if started in local as mentioned in Prerequisites. Or a valid DNS or IP from the cloud.
+`export OISP_URL=< URL of the OISP Agent >`
 
-export OISP_PORT=< 7070 >
+Example: "127.0.0.1", if the agent is started in local as mentioned in the prerequisites. Or a valid DNS or IP from the cloud.
 
-export OPC_USERNAME=< Usenrame of OPC-UA server, if any>
 
-export OPC_PASSWORD=< Password of OPC-UA server, if any>
+`export OISP_PORT=< 7070 >`
 
-Also, the fusion OPC-UA service expects a config file with the name config.json in the 'resources' folder in the root project folder containing OPC-UA node ids', namespaces, PDT device property names as shown below.
+`export OPC_USERNAME=< Usenrame of OPC-UA server, if any>`
+
+`export OPC_PASSWORD=< Password of OPC-UA server, if any>`
+
+Also, the fusion OPC-UA service expects a config file with the name config.json in the 'resources' folder in the root project folder containing OPC-UA node ids', namespaces, PDT device property names as shown below in the example.
 
 ```json
 {
@@ -120,6 +123,11 @@ Also, the fusion OPC-UA service expects a config file with the name config.json 
             "node_id": "ns=2",
             "identifier": "s=1:MergedRootGroupNode/MsncCoreRootNode/ActualStateOfCuttingMachine/ActualState?msnc.aSpd",
             "parameter": "plasma-cutter-v0.1-plasma-cutter-runtime-cutter-head-speed"
+            },
+            {
+            "node_id": "some namespace",
+            "identifier": "Some OPC-UA node identifier",
+            "parameter": "some property"
             }
         ]
     }
@@ -128,15 +136,15 @@ Also, the fusion OPC-UA service expects a config file with the name config.json 
 
 **Run the service**
 
-´python src/main.py´
+`python src/main.py`
 
 
 ## Docker build and run
 
-To build this project using Docker and run it follow the below instructions.
+To build this project using Docker and run it, follow the below instructions.
 
 From the root project folder.
 
-´docker build -t < image name > .´
+`docker build -t < image name > .`
 
-´docker run -d -e OISP_API_ROOT="https://< PDT URL >/oisp/v1/api" -e USERNAME=< Username from PDT Keycloak > -e PASSWORD=< Passowrd from PDT Keycloak > -e OISP_DEVICE_ID=< Device ID of the asset in PDT - Scorpio API to which the data must be sent > -e OPCUA_DISCOVERY_URL=< OPC-UA Server URL > -e OISP_URL=< URL of the OISP Agent > -e OISP_PORT=< 7070 > -e OPC_USERNAME=< Usenrame of OPC-UA server, if any> -e OPC_PASSWORD=< Password of OPC-UA server, if any> -v < config file path >:resources/config.json´
+`docker run -d -e OISP_API_ROOT="https://< PDT URL >/oisp/v1/api" -e USERNAME=< Username from PDT Keycloak > -e PASSWORD=< Passowrd from PDT Keycloak > -e OISP_DEVICE_ID=< Device ID of the asset in PDT - Scorpio API to which the data must be sent > -e OPCUA_DISCOVERY_URL=< OPC-UA Server URL > -e OISP_URL=< URL of the OISP Agent > -e OISP_PORT=< 7070 > -e OPC_USERNAME=< Usenrame of OPC-UA server, if any> -e OPC_PASSWORD=< Password of OPC-UA server, if any> -v < config file path >:resources/config.json`
